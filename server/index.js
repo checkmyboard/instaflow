@@ -116,14 +116,17 @@ app.get('/api/contacts', (req, res) => {
   res.json(result)
 })
 
-// Default token pre-populated
-const DEFAULT_TOKEN = 'EAAjSB2gET4kBRzaSKvUg4g6BI1FKhMkbOsK8rbB3wHZAV0LCS75B7ZAQvD3Ehp8qZArV2vvx6ze1wnAgxrMZCPGm6wlVISrqiRqTMjJeIr8MZCnvapq4SbBTyvdwwr6Q4Lh8sLNqtWDil1AweHJYgYph186uZAYpCphmTuM6eWP7Vv3TfM6XFMpdcuQ9DzB4sA47uCnwqfZBcMLdXG0H7bdZASYUWZBFEpvaKlnwLM7mYcrJUV03l5JqrXAmj9NGtyIDnrbmkxNYQcXQIZApHDw8EAZAtdzqSQTY5nXgHgZD'
-if (!getSetting('accessToken')) {
-  setSetting('accessToken', DEFAULT_TOKEN)
-  setSetting('pollingInterval', 60)
-  setSetting('webhookVerifyToken', 'instaflow_verify')
-  console.log('[InstaFlow] Token pré-configurado.')
+// Seed settings from environment variables on first boot (survives redeploys)
+if (process.env.IG_ACCESS_TOKEN && !getSetting('accessToken')) {
+  setSetting('accessToken', process.env.IG_ACCESS_TOKEN)
+  console.log('[InstaFlow] Token carregado do ambiente.')
 }
+if (process.env.IG_ACCOUNT_ID && !getSetting('instagramAccountId')) {
+  setSetting('instagramAccountId', process.env.IG_ACCOUNT_ID)
+  setSetting('igUsername', process.env.IG_USERNAME || '')
+}
+if (!getSetting('pollingInterval')) setSetting('pollingInterval', 60)
+if (!getSetting('webhookVerifyToken')) setSetting('webhookVerifyToken', 'instaflow_verify')
 
 // Cron polling
 let cronJob = null
