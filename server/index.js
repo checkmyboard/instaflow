@@ -7,6 +7,7 @@ const { getAll, getById, getSetting, setSetting, read } = require('./db')
 const automationsRouter = require('./routes/automations')
 const { router: instagramRouter, pollComments } = require('./routes/instagram')
 const webhookRouter = require('./routes/webhook')
+const privacyRouter = require('./routes/privacy')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -18,6 +19,7 @@ app.use(express.json())
 app.use('/api/automations', automationsRouter)
 app.use('/api/instagram', instagramRouter)
 app.use('/api/webhook', webhookRouter)
+app.use('/privacidade', privacyRouter)
 
 // Settings
 app.get('/api/settings', (req, res) => {
