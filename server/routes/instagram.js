@@ -200,6 +200,19 @@ async function getComments(mediaId, token) {
   }
 }
 
+async function likeComment(commentId, token) {
+  try {
+    await axios.post(`${BASE}/${commentId}/likes`, null, {
+      params: { access_token: token }
+    })
+    console.log(`[InstaFlow] Curtiu comentário ${commentId}`)
+    return true
+  } catch (e) {
+    console.error('[InstaFlow] Like error:', e.response?.data?.error?.message || e.message)
+    return false
+  }
+}
+
 async function replyToComment(commentId, message, token) {
   try {
     await axios.post(`${BASE}/${commentId}/replies`, null, {
@@ -346,6 +359,11 @@ async function pollComments() {
 
         let replySent = false
         let dmSent = false
+
+        if (auto.likeCommentEnabled) {
+          await likeComment(commentId, token)
+          await new Promise(r => setTimeout(r, 1500))
+        }
 
         if (auto.replyToCommentEnabled) {
           const replies = auto.commentReplies || []

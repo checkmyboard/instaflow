@@ -13,6 +13,7 @@ const toObj = (a) => a ? {
   postIds: a.postIds,
   commentReplies: a.commentReplies,
   dmMessage: a.dmMessage,
+  likeCommentEnabled: a.likeCommentEnabled ?? false,
   replyToCommentEnabled: a.replyToCommentEnabled,
   sendDmEnabled: a.sendDmEnabled,
   requireFollower: a.requireFollower ?? false,
@@ -43,6 +44,7 @@ router.post('/', (req, res) => {
     name, keyword, matchType, postIds, commentReplies,
     dmMessage: resolvedDmMessages[0] || '',
     dmMessages: resolvedDmMessages,
+    likeCommentEnabled: req.body.likeCommentEnabled ?? false,
     replyToCommentEnabled, sendDmEnabled, requireFollower, nonFollowerReply, active,
     createdAt: new Date().toISOString(),
     stats: { triggered: 0, commentsSent: 0, dmsSent: 0 }
@@ -54,7 +56,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const existing = getById('automations', req.params.id)
   if (!existing) return res.status(404).json({ error: 'Não encontrado' })
-  const { name, keyword, matchType, postIds, commentReplies, dmMessage, replyToCommentEnabled, sendDmEnabled, active } = req.body
+  const { name, keyword, matchType, postIds, commentReplies, dmMessage, replyToCommentEnabled, sendDmEnabled, likeCommentEnabled, active } = req.body
   const { requireFollower, nonFollowerReply, dmMessages } = req.body
   const resolvedDmMessages = dmMessages?.length ? dmMessages : (dmMessage ? [dmMessage] : existing.dmMessages)
   const updated = update('automations', req.params.id, {
@@ -65,6 +67,7 @@ router.put('/:id', (req, res) => {
     commentReplies: commentReplies ?? existing.commentReplies,
     dmMessage: resolvedDmMessages?.[0] ?? existing.dmMessage,
     dmMessages: resolvedDmMessages ?? existing.dmMessages ?? [],
+    likeCommentEnabled: likeCommentEnabled ?? existing.likeCommentEnabled ?? false,
     replyToCommentEnabled: replyToCommentEnabled ?? existing.replyToCommentEnabled,
     sendDmEnabled: sendDmEnabled ?? existing.sendDmEnabled,
     requireFollower: requireFollower ?? existing.requireFollower ?? false,

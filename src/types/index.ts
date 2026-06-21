@@ -8,6 +8,7 @@ export interface Automation {
   commentReplies: string[]
   dmMessage: string
   dmMessages: string[]
+  likeCommentEnabled: boolean
   replyToCommentEnabled: boolean
   sendDmEnabled: boolean
   requireFollower: boolean

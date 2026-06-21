@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft, Plus, Trash2, Zap, MessageCircle, Send,
   Hash, Film, Save, AlertCircle, CheckCircle2, Shuffle,
-  Info, ChevronDown, UserCheck
+  Info, ChevronDown, UserCheck, Heart
 } from 'lucide-react'
 import type { Post, Automation } from '../types'
 
@@ -31,6 +31,7 @@ export default function AutomationBuilder() {
     postIds: 'all' as string[] | 'all',
     commentReplies: [''],
     dmMessages: [''],
+    likeCommentEnabled: false,
     replyToCommentEnabled: true,
     sendDmEnabled: true,
     requireFollower: false,
@@ -55,6 +56,7 @@ export default function AutomationBuilder() {
             postIds: d.postIds,
             commentReplies: d.commentReplies,
             dmMessages: d.dmMessages?.length ? d.dmMessages : (d.dmMessage ? [d.dmMessage] : ['']),
+            likeCommentEnabled: d.likeCommentEnabled ?? false,
             replyToCommentEnabled: d.replyToCommentEnabled,
             sendDmEnabled: d.sendDmEnabled,
             requireFollower: d.requireFollower ?? false,
@@ -297,6 +299,18 @@ export default function AutomationBuilder() {
 
         {/* Step 4 — Comment Reply */}
         <Section title="4. Resposta no Comentário" icon={<MessageCircle size={16} className="text-primary-500" />}>
+          {/* Like toggle */}
+          <div className="flex items-center gap-3 mb-3 p-3 bg-pink-50 border border-pink-100 rounded-xl">
+            <Toggle
+              checked={form.likeCommentEnabled}
+              onChange={v => setForm(f => ({ ...f, likeCommentEnabled: v }))}
+            />
+            <Heart size={15} className={form.likeCommentEnabled ? 'text-pink-500' : 'text-gray-400'} />
+            <span className="text-sm font-medium text-gray-700">
+              {form.likeCommentEnabled ? 'Curtir o comentário antes de responder' : 'Não curtir o comentário'}
+            </span>
+          </div>
+
           <div className="flex items-center gap-3 mb-4">
             <Toggle
               checked={form.replyToCommentEnabled}
